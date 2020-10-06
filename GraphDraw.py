@@ -183,13 +183,16 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             out.save(filename)
     
     (eventName,eventStart,eventEnd)=basicGet(eventNumber,rankType)
-    (pctList,ptList,slpList,ufinList,finList,bfinList)=dataTrans(eventNumber,areacode,eventNumber,rankType)
-    
-    if len(pctList)>=3:
-        able=graphDraw(pctList,ptList,slpList,ufinList,finList,bfinList)
-        picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able,basePath)    
-    else:
+    try:
+        (pctList,ptList,slpList,ufinList,finList,bfinList)=dataTrans(eventNumber,areacode,eventNumber,rankType)
+        if len(pctList)>=3:
+            able=graphDraw(pctList,ptList,slpList,ufinList,finList,bfinList)
+            picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able,basePath)    
+        else:
+            noptHandle(eventName,basePath)
+    except:
         noptHandle(eventName,basePath)
+
         
 def nopicHandle(imgbasePath):
     for filename0 in ['e100.png','e1k.png','e2k.png']:
@@ -214,12 +217,13 @@ def GetDataPic(areacode,basePath,JsonPath,PredNow=True,Benum=0):
         if Dict['rS']!='N00':
             for typ in range(0,3):
                 main(enum,typ,areacode,basePath,JsonPath)
-            print('完成时间',datetime.datetime.fromtimestamp(time.time()).strftime("%m/%d %H:%M:%S"))
+
         else:
             nopicHandle(basePath)
     else:
         for typ in range(0,3):
                 main(Benum,typ,areacode,basePath,JsonPath)
+    print('完成时间',datetime.datetime.fromtimestamp(time.time()).strftime("%m/%d %H:%M:%S"))
 
 
 

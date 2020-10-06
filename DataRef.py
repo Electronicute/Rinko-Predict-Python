@@ -9,7 +9,7 @@ import getPred
 import outData
 import requests
 import json
-
+import time,datetime
 def __Main__RunPred(filepath,enum,etp,AreaCode=3,pred_Length=3,gamma_Threshold=1):
     '''this is the EntryPoint of the specific NLD_Core
     :filepath ~ a path of Content should be Save :like "D:/asd/"
@@ -71,6 +71,7 @@ def GetDataStorage(dirs,AreaCode=3,PredNow=True,Benum=0):
                 #this is a predict-ivity reference, Which is Encoded in this frame of function.
         else:
             print('当前无活动！')
+        
     else:
         for RankType in range(0,3):
                 __Main__RunPred(dirs,Benum,RankType,AreaCode,6,1)

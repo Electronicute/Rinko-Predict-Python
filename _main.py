@@ -2,11 +2,12 @@ import os
 import DataRef
 import GraphDraw
 import time
-imgbasePath='D:/asd/now/'
+'''imgbasePath='D:/asd/now/'
 basePath='D:/asd/'
+'''
 
-#imgbasePath='/root/web/rinkoapi/curevent/'
-#basePath='/root/web/rinkoapi/ycxcore/'
+imgbasePath='/root/web/rinkoapi/curevent/'
+basePath='/root/web/rinkoapi/ycxcore/'
 
 areacode=3          #country Code
 TogglePara = True  #if PredNow please to change to True
@@ -25,7 +26,13 @@ if not os.path.exists(basePath+str(areacode)):
 while True:
     try:
         DataRef.GetDataStorage(basePath,areacode,TogglePara,Bnum)             #make sure that we've already storage the file
-        GraphDraw.GetDataPic(areacode,imgbasePath,basePath,TogglePara,Bnum)   #use file to Pic
     except:
-        print('FAIL')
-    time.sleep(300)
+        print('Analyse Fail!')
+
+    try:
+        GraphDraw.GetDataPic(areacode,imgbasePath,basePath,TogglePara,Bnum)   #use file to Pic
+    except Exception as e:
+        print('Draw Fail!',e)
+    
+    
+    time.sleep(180)
