@@ -77,13 +77,13 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         
         legendList.append('目前进度')    
         plt.legend(legendList,loc='lower right')    
-        plt.savefig('chart.png', dpi=600, bbox_inches='tight')
+        plt.savefig('resources/chart.png', dpi=600, bbox_inches='tight')
         plt.close()  
         
         fig, ax = plt.subplots()
         fig.patch.set_alpha(0.) 
         plt.pie([100-progress,progress],wedgeprops=dict(width=0.1))
-        fig.savefig('ring.png',dpi=450, transparent=True, bbox_inches='tight')
+        fig.savefig('resources/ring.png',dpi=450, transparent=True, bbox_inches='tight')
         plt.close() 
         
         if  pctList[-1]>=85:
@@ -100,7 +100,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             plt.text(pctList[-1],finList[-1],'%.0f'%finList[-1],ha = 'center',va = 'bottom')    
             plt.text(pctList[-1],ptList[-1]*0.95,'%.0f'%ptList[-1],ha = 'center',va = 'bottom')  
             plt.legend(['实时分数线','预测分数线(均值)','预测分数线(上限)','校正点'],loc='upper left')
-            plt.savefig('Detailchart.png', dpi=600, bbox_inches='tight')
+            plt.savefig('resources/Detailchart.png', dpi=600, bbox_inches='tight')
             plt.close()  
             able=1
         else:
@@ -123,23 +123,23 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         ptTime=timestamp_full(ptTimestamp)
         print('正在生成<',eventName,'>'+rankList[rankType]+'分数线信息')    
        
-        im = Image.open("background70.png")
+        im = Image.open("resources/background70.png")
         
         box=(75,500,3425,2810)
-        chart1= Image.open('chart.png')
+        chart1= Image.open('resources/chart.png')
         region = chart1
         region = region.resize((box[2] - box[0], box[3] - box[1]))
         im.paste(region, box)
         if able==1:
             box2= (75,500,1750,1690)
-            chart2= Image.open('Detailchart.png')
+            chart2= Image.open('resources/Detailchart.png')
             region2 = chart2
             region2 = region2.resize((box2[2] - box2[0], box2[3] - box2[1]))
             im.paste(region2, box2)
         else:
             pass
         
-        chart3= Image.open('Ring.png')
+        chart3= Image.open('resources/ring.png')
         region3 = chart3
         region3=region3.crop((180,180,1270,1270))
         box3=(30,2850,1120,3940)
@@ -147,9 +147,9 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         im=im.convert('RGBA')
         txt=Image.new('RGBA', im.size, (0,0,0,0))
         
-        fnt=ImageFont.truetype("HYZhengYuan-55W.ttf", 160)
-        fnt2=ImageFont.truetype("Helvetica Bold.ttf", 160) 
-        fnt3=ImageFont.truetype("HYZhengYuan-55W.ttf", 120)
+        fnt=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 160)
+        fnt2=ImageFont.truetype("resources/Helvetica Bold.ttf", 160) 
+        fnt3=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 120)
         
         d=ImageDraw.Draw(txt) 
         titlex=1750-(len(eventName)+2)/2*160
@@ -163,17 +163,17 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         d.text((2480,3250),ptTime,font=fnt3, fill=(0,0,0,255))
         d.text((2480,3850),endTime,font=fnt3, fill=(0,0,0,255))
         d.text((1280,3750),nowTime,font=fnt3, fill=(0,0,0,255))
-
+        
         out=Image.alpha_composite(im,txt)
-        #out.show()
+        time.sleep(0.1)
         out=out.resize((1750,2500))
         filename=basePath+rankList2[rankType]+'.png'
         out.save(filename)
   
     def noptHandle(eventName,basePath):
-        im = Image.open("noPt70.png")
+        im = Image.open("resources/noPt70.png")
         txt=Image.new('RGBA', im.size, (0,0,0,0))
-        fnt=ImageFont.truetype("HYZhengYuan-55W.ttf", 50)
+        fnt=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 50)
         titlex=400-(len(eventName)+2)/2*50
         d=ImageDraw.Draw(txt) 
         d.text((titlex,100),'《'+eventName+'》',font=fnt, fill=(0,0,0,255))
@@ -194,7 +194,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
 def nopicHandle(imgbasePath):
     for filename0 in ['e100.png','e1k.png','e2k.png']:
         filename=imgbasePath+filename0
-        shutil.copyfile('noevent.png', filename)
+        shutil.copyfile('resources/noevent.png', filename)
 
 def GetDataPic(areacode,basePath,JsonPath,PredNow=True,Benum=0):
     '''this is the Main Core for Data Pic Print
