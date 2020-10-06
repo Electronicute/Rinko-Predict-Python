@@ -11,7 +11,7 @@ basePath='D:/asd/'
 areacode=3          #country Code
 TogglePara = False  #if PredNow please to change to True
 #test only
-Bnum=40             #eventNumber
+Bnum=52           #eventNumber
     
     
 #make sure of Dir is create

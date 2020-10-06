@@ -65,18 +65,26 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         progress=(time.time()-eventStart)/(eventEnd-eventStart)*100
         if progress>100:
             progress=100
+            
         legendList=['实时分数线']
         if ufinList[-1]!=None:
             plt.vlines(progress,0,ufinList[-1]*1.2,color='green',ls='--')
-            plt.plot(pctList,ufinList,marker='*',ls='--',color='red')
-            plt.text(pctList[-1],ufinList[-1]*1.05,'%.0f'%ufinList[-1],ha = 'center',va = 'bottom')    
+            plt.plot(pctList,finList,marker='*',ls='--',color='red')
+            plt.text(pctList[-1],finList[-1]*1.05,'%.0f'%ufinList[-1],ha = 'center',va = 'bottom')    
             legendList.append('预测最终分数')
         else:
             plt.vlines(progress,0,ptList[-1]*1.2,color='green',ls='--')
+        
         legendList.append('目前进度')    
         plt.legend(legendList,loc='lower right')    
         plt.savefig('chart.png', dpi=600, bbox_inches='tight')
         plt.close()  
+        
+        fig, ax = plt.subplots()
+        fig.patch.set_alpha(0.) 
+        plt.pie([100-progress,progress],wedgeprops=dict(width=0.1))
+        fig.savefig('ring.png',dpi=450, transparent=True, bbox_inches='tight')
+        plt.close() 
         
         if  pctList[-1]>=85:
             plt.figure().add_subplot(111)
@@ -88,9 +96,10 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             plt.scatter(pctList[-5:],ufinList[-5:],color='red',marker='*')
             plt.scatter(pctList[-5:],finList[-5:],color='orange',marker='o')
             plt.scatter(pctList[-5:],bfinList[-5:],color='green',marker='*')
-            plt.text(pctList[-1],ufinList[-1]*1.02,'%.0f'%ufinList[-1],ha = 'center',va = 'bottom')    
+            plt.text(pctList[-1],ufinList[-1]*1.02,'%.0f'%finList[-1],ha = 'center',va = 'bottom')  
+            plt.text(pctList[-1],finList[-1],'%.0f'%finList[-1],ha = 'center',va = 'bottom')    
             plt.text(pctList[-1],ptList[-1]*0.95,'%.0f'%ptList[-1],ha = 'center',va = 'bottom')  
-            plt.legend(['实时分数线','预测分数线(均值)','预测分数线(上限)','校正点'],loc='lower right')
+            plt.legend(['实时分数线','预测分数线(均值)','预测分数线(上限)','校正点'],loc='upper left')
             plt.savefig('Detailchart.png', dpi=600, bbox_inches='tight')
             plt.close()  
             able=1
@@ -105,7 +114,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         if progress>100:
             progress=100
         ptNow=str(ptList[-1])
-        ptPredict=str('%.0f'%ufinList[-1])
+        ptPredict=str('%.0f'%finList[-1])
         if ptPredict==None:
             ptPredict='--'
         endTime=timestamp_full(eventEnd)
@@ -114,7 +123,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         ptTime=timestamp_full(ptTimestamp)
         print('正在生成<',eventName,'>'+rankList[rankType]+'分数线信息')    
        
-        im = Image.open("background.png")
+        im = Image.open("background70.png")
         
         box=(75,500,3425,2810)
         chart1= Image.open('chart.png')
@@ -129,29 +138,38 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             im.paste(region2, box2)
         else:
             pass
+        
+        chart3= Image.open('Ring.png')
+        region3 = chart3
+        region3=region3.crop((180,180,1270,1270))
+        box3=(30,2850,1120,3940)
+        im.paste(region3,box3,region3)
+        im=im.convert('RGBA')
         txt=Image.new('RGBA', im.size, (0,0,0,0))
         
         fnt=ImageFont.truetype("HYZhengYuan-55W.ttf", 160)
         fnt2=ImageFont.truetype("Helvetica Bold.ttf", 160) 
         fnt3=ImageFont.truetype("HYZhengYuan-55W.ttf", 120)
-
+        
         d=ImageDraw.Draw(txt) 
         titlex=1750-(len(eventName)+2)/2*160
         d.text((titlex,100),'《'+eventName+'》',font=fnt, fill=(0,0,0,255))
         d.text((3020,360),rankList[rankType],font=fnt3, fill=(0,0,0,255))
-        d.text((422,3415),str(progress)+'%',font=fnt2, fill=(0,0,0,255))
-        scorex1=3095-len(ptNow)/2*160
-        scorex2=3095-len(ptPredict)/2*160
-        d.text((scorex1,3135),ptNow,font=fnt2, fill=(0,0,0,255))
+        d.text((400,3415),str(progress)+'%',font=fnt2, fill=(0,0,0,255))
+        scorex1=3100-len(ptNow)/2*160
+        scorex2=3100-len(ptPredict)/2*160
+        d.text((scorex1,3100),ptNow,font=fnt2, fill=(0,0,0,255))
         d.text((scorex2,3690),ptPredict,font=fnt2, fill=(0,0,0,255))
-        d.text((1275,3135),ptTime,font=fnt3, fill=(0,0,0,255))
-        d.text((1275,3690),endTime,font=fnt3, fill=(0,0,0,255))
+        d.text((2480,3250),ptTime,font=fnt3, fill=(0,0,0,255))
+        d.text((2480,3850),endTime,font=fnt3, fill=(0,0,0,255))
+        d.text((1280,3750),nowTime,font=fnt3, fill=(0,0,0,255))
 
         out=Image.alpha_composite(im,txt)
         #out.show()
+        out=out.resize((1750,2500))
         filename=basePath+rankList2[rankType]+'.png'
         out.save(filename)
-        
+  
     def noptHandle(eventName,basePath):
         im = Image.open("noPt70.png")
         txt=Image.new('RGBA', im.size, (0,0,0,0))
@@ -194,13 +212,13 @@ def GetDataPic(areacode,basePath,JsonPath,PredNow=True,Benum=0):
         Dict=json.loads(Data)
         enum=int(Dict['rS'][1:])
         if Dict['rS']!='N00':
-            for typ in range(0,2):
+            for typ in range(0,3):
                 main(enum,typ,areacode,basePath,JsonPath)
             print('完成时间',datetime.datetime.fromtimestamp(time.time()).strftime("%m/%d %H:%M:%S"))
         else:
             nopicHandle(basePath)
     else:
-        for typ in range(0,2):
+        for typ in range(0,3):
                 main(Benum,typ,areacode,basePath,JsonPath)
 
 
