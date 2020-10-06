@@ -143,5 +143,5 @@ def PreProcessData(filepath,enum,etp,df,pred_length=6,gamma_threshold=1,usefile=
 	dfx.eval('FIN=REGFIN+C*gamma',inplace=True)
 	dfx.eval('UFIN=FIN+C*gamma',inplace=True)
 	dfx.eval('BFIN=FIN-C*gamma',inplace=True)
-	print(dfx)
+	#print(dfx)
 	return dfx

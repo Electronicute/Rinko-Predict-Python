@@ -6,7 +6,8 @@ warnings.filterwarnings("ignore")
 import getData
 import getPred
 import outData
-
+import requests
+import json
 def __Main__RunPred(filepath,enum,etp,pred_Length=3,gamma_Threshold=1):
     '''this is the EntryPoint of the specific NLD_Core
     :filepath ~ a path of Content should be Save :like "D:/asd/"
@@ -33,3 +34,19 @@ def __Main__RunPred(filepath,enum,etp,pred_Length=3,gamma_Threshold=1):
     #Outpu Data
     outData.OutPut(fp,enum,etp,mid)
     return True
+
+
+if  __name__=='__main__':
+    
+    hd={'User_Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1'}
+    url='http://bandoriapi.cn/Query/Event/eventNow/3'
+    Data=requests.get(url,headers=hd).text
+    Dict=json.loads(Data)
+    if Dict['rS']!='N00':
+        enum=int(Dict['rS'][1:])
+        dirs=''
+        __Main__RunPred(dirs,enum,0,6,1)
+        __Main__RunPred(dirs,enum,1,6,1)
+        __Main__RunPred(dirs,enum,2,6,1)
+    else:
+        print('当前无活动！')
