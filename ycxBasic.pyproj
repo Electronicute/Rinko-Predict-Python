@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>81a228ed-1af2-4dc4-8ece-adbd06911573</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>_mainycx.py</StartupFile>
+    <StartupFile>_main.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -25,16 +25,29 @@
     <Compile Include="getData.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GraphDraw.py" />
+    <Compile Include="_main.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="outData.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="getPred.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ycxMainCore.py">
+    <Compile Include="DataRef.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="_mainycx.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include=".gitattributes" />
+    <Content Include="background.png" />
+    <Content Include="background70.png" />
+    <Content Include="Helvetica Bold.ttf" />
+    <Content Include="HYZhengYuan-55W.ttf" />
+    <Content Include="noevent.png" />
+    <Content Include="noPt.png" />
+    <Content Include="noPt70.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

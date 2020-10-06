@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import matplotlib.pyplot as plt
 import json
 import datetime,time
@@ -8,7 +9,7 @@ import PIL.ImageFont as ImageFont
 import PIL.ImageDraw as ImageDraw
 import shutil
 
-def main(eventNumber,rankType,areacode):
+def main(eventNumber,rankType,areacode,basePath,JsonPath):
     
     def timestamp(x): #换算时间戳到天数    
         dateArray = datetime.datetime.fromtimestamp(x)
@@ -29,9 +30,8 @@ def main(eventNumber,rankType,areacode):
         eventEnd=int(eventDict['Data']['endAt'][3])/1000
         return eventName,eventStart,eventEnd
         
-    def dataTrans(eventNumber):
-        jsonname='e'+str(eventNumber)+"t"+str(rankType)
-        jsondir='D:/Rinkotest/'+jsonname+'/event_json_'+jsonname+'.json' #此处要改！！
+    def dataTrans(eventNumber,AreaCode,enum,etp):
+        jsondir=JsonPath+str(AreaCode)+"/"+"e"+str(enum)+"/"+"t"+str(etp)+"/"+"event.json" #此处要改！！
         predictJson=open(jsondir)
         preDict=json.load(predictJson)
         pctList=[]
@@ -98,7 +98,7 @@ def main(eventNumber,rankType,areacode):
             able=0   
         return able
     
-    def picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able):
+    def picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able,basePath):
         rankList=['[T 100]','[T1000]','[T2000]']
         rankList2=['e100','e1k','e2k']
         progress=int(((time.time()-eventStart)/(eventEnd-eventStart)*100))
@@ -149,10 +149,10 @@ def main(eventNumber,rankType,areacode):
 
         out=Image.alpha_composite(im,txt)
         #out.show()
-        filename='/root/web/rinkoapi/curevent/'+rankList2[rankType]+'.png'
+        filename=basePath+rankList2[rankType]+'.png'
         out.save(filename)
         
-    def noptHandle(eventName):
+    def noptHandle(eventName,basePath):
         im = Image.open("noPt70.png")
         txt=Image.new('RGBA', im.size, (0,0,0,0))
         fnt=ImageFont.truetype("HYZhengYuan-55W.ttf", 50)
@@ -161,36 +161,48 @@ def main(eventNumber,rankType,areacode):
         d.text((titlex,100),'《'+eventName+'》',font=fnt, fill=(0,0,0,255))
         out=Image.alpha_composite(im,txt)
         for filename0 in ['e100.png','e1k.png','e2k.png']:
-            filename='/root/web/rinkoapi/curevent/'+filename0
+            filename=basePath+filename0
             out.save(filename)
     
     (eventName,eventStart,eventEnd)=basicGet(eventNumber,rankType)
-    (pctList,ptList,slpList,ufinList,finList,bfinList)=dataTrans(eventNumber)
+    (pctList,ptList,slpList,ufinList,finList,bfinList)=dataTrans(eventNumber,areacode,eventNumber,rankType)
+    
     if len(pctList)>=3:
         able=graphDraw(pctList,ptList,slpList,ufinList,finList,bfinList)
-        picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able)    
+        picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able,basePath)    
     else:
-        noptHandle(eventName)
+        noptHandle(eventName,basePath)
         
-
-def nopicHandle():
+def nopicHandle(imgbasePath):
     for filename0 in ['e100.png','e1k.png','e2k.png']:
-        filename='/root/web/rinkoapi/curevent/'+filename0
+        filename=imgbasePath+filename0
         shutil.copyfile('noevent.png', filename)
-    
-    
-if  __name__=='__main__':
-    areacode=3
-    hd={'User_Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1'}
-    url='http://bandoriapi.cn/Query/Event/eventNow/'+str(areacode)
-    Data=requests.get(url,headers=hd).text
-    Dict=json.loads(Data)
-    enum=int(Dict['rS'][1:])
-    if Dict['rS']!='N00':
-        for typ in range(0,3):
-            main(enum,typ,areacode)
-        print('完成时间',datetime.datetime.fromtimestamp(time.time()).strftime("%m/%d %H:%M:%S"))
-        
-        
+
+def GetDataPic(areacode,basePath,JsonPath,PredNow=True,Benum=0):
+    '''this is the Main Core for Data Pic Print
+    :basePath ~ which should be the Image's storage path
+    :JsonPath ~ which indecate the Json file storage path
+    :PredNow ~ which indecate of weather or not Predict Event Of now
+        NOTICE this will change the behaviour of the function: 
+        if this enable you MUST enter next few value
+        :Benum is the event number that you want to check.
+    '''
+    if(PredNow):
+        hd={'User_Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1'}
+        url='http://bandoriapi.cn/Query/Event/eventNow/'+str(areacode)
+        Data=requests.get(url,headers=hd).text
+        Dict=json.loads(Data)
+        enum=int(Dict['rS'][1:])
+        if Dict['rS']!='N00':
+            for typ in range(0,2):
+                main(enum,typ,areacode,basePath,JsonPath)
+            print('完成时间',datetime.datetime.fromtimestamp(time.time()).strftime("%m/%d %H:%M:%S"))
+        else:
+            nopicHandle(basePath)
     else:
-        nopicHandle()
+        for typ in range(0,2):
+                main(Benum,typ,areacode,basePath,JsonPath)
+
+
+
+

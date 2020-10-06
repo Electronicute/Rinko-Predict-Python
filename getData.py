@@ -5,7 +5,7 @@ import requests
 import csv
 import pandas as pd
 
-def get(filepath,eventNumber,rankType,showComplete=True):
+def get(filepath,eventNumber,rankType,regionType=3,showComplete=True):
     '''this Defines the Data which need to return to alive
     :filepath: *str ~ the specific path you want to insert file into
     :eventNumber: *int ~ a number which event you want to get
@@ -15,7 +15,7 @@ def get(filepath,eventNumber,rankType,showComplete=True):
     this can also trigs a output of isDownloadComplete, if not set 4th parameter to *False
     '''
     hd={'User_Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1'}
-    url='http://bandoriapi.cn/Query/Event/eventDataTracker/cn/'+str(eventNumber)+'/'+str(rankType)
+    url='http://bandoriapi.cn/Query/Event/eventDataTracker/'+str(regionType)+'/'+str(eventNumber)+'/'+str(rankType)
     
     eventData=requests.get(url,headers=hd).text
     eventDict=json.loads(eventData)
@@ -38,7 +38,7 @@ def get(filepath,eventNumber,rankType,showComplete=True):
     if not os.path.exists(filepath):
         os.mkdir(filepath)
 
-    f = open(filepath+"bd_e"+str(eventNumber)+"t"+str(rankType)+".json",mode='w')
+    f = open(filepath+"bd.json",mode='w')
     df.to_json(f,'records')
     f.close()
 

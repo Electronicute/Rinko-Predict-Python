@@ -68,7 +68,7 @@ def ProcessDataUniquefiy(dfp):
 	except:
 		return pd.DataFrame([[float(0),float(0)]],columns=["dx","lpct"]).rename({0:""})
 
-def PreProcessData(filepath,enum,etp,df,pred_length=6,gamma_threshold=1,usefile=False):
+def PreProcessData(filepath,enum,etp,df,pred_length=6,gamma_threshold=1):
 	'''this is the Data Pre-Process Method. which using GCDS (gamma-CDS)
 	:fileCSVpath : is the path that you configuate in the File
 	:is the BIG event you need to import
@@ -78,8 +78,6 @@ def PreProcessData(filepath,enum,etp,df,pred_length=6,gamma_threshold=1,usefile=
 		beacuse there's negative value of gamma is gain much larger when not final yet *
 	:return [a DataFrame of Final]
 	'''
-	if(usefile):
-		df = pd.read_json(filepath+"bd_e"+str(enum)+"t"+str(etp)+".json", encoding='utf-8')
 
 	pd.set_option('display.max_columns', None)			#define show all columns
 	pd.set_option('display.max_rows', None)				#define show all columns
