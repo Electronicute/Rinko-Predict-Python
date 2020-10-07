@@ -2,12 +2,14 @@ import os
 import DataRef
 import GraphDraw
 import time
-'''imgbasePath='D:/asd/now/'
+'''
+imgbasePath='D:/asd/now/'
 basePath='D:/asd/'
 '''
 
 imgbasePath='/root/web/rinkoapi/curevent/'
 basePath='/root/web/rinkoapi/ycxcore/'
+
 
 areacode=3          #country Code
 TogglePara = True  #if PredNow please to change to True

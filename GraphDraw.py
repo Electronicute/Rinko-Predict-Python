@@ -67,10 +67,10 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             progress=100
             
         legendList=['实时分数线']
-        if ufinList[-1]!=None:
-            plt.vlines(progress,0,ufinList[-1]*1.2,color='green',ls='--')
+        if finList[-1]!=None:
+            plt.vlines(progress,0,finList[-1]*1.2,color='green',ls='--')
             plt.plot(pctList,finList,marker='*',ls='--',color='red')
-            plt.text(pctList[-1],finList[-1]*1.05,'%.0f'%ufinList[-1],ha = 'center',va = 'bottom')    
+            plt.text(pctList[-1],finList[-1]*1.05,'%.0f'%finList[-1],ha = 'center',va = 'bottom')    
             legendList.append('预测最终分数')
         else:
             plt.vlines(progress,0,ptList[-1]*1.2,color='green',ls='--')
@@ -170,7 +170,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         filename=basePath+rankList2[rankType]+'.png'
         out.save(filename)
   
-    def noptHandle(eventName,basePath):
+    def noptHandle(eventName,basePath,rankType=4):
         im = Image.open("resources/noPt70.png")
         txt=Image.new('RGBA', im.size, (0,0,0,0))
         fnt=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 50)
@@ -178,8 +178,13 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         d=ImageDraw.Draw(txt) 
         d.text((titlex,100),'《'+eventName+'》',font=fnt, fill=(0,0,0,255))
         out=Image.alpha_composite(im,txt)
-        for filename0 in ['e100.png','e1k.png','e2k.png']:
-            filename=basePath+filename0
+        if rankType==4:
+            for filename0 in ['e100.png','e1k.png','e2k.png']:
+                filename=basePath+filename0
+                out.save(filename)
+        else:
+            flist=['e100.png','e1k.png','e2k.png']
+            filename=basePath+flist[rankType]
             out.save(filename)
     
     (eventName,eventStart,eventEnd)=basicGet(eventNumber,rankType)
@@ -189,9 +194,9 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             able=graphDraw(pctList,ptList,slpList,ufinList,finList,bfinList)
             picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able,basePath)    
         else:
-            noptHandle(eventName,basePath)
+            noptHandle(eventName,basePath,rankType)
     except:
-        noptHandle(eventName,basePath)
+        noptHandle(eventName,basePath,rankType)
 
         
 def nopicHandle(imgbasePath):
