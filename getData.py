@@ -43,7 +43,7 @@ def get(filepath,eventNumber,rankType,regionType=3,showComplete=True):
     f.close()
 
     if showComplete:
-        print("Json Write Complete!",str(eventNumber),"TypeOn:",str(rankType),"->")
+        print("Bestdori Json Write Complete!",str(eventNumber),"TypeOn:",str(rankType),"->")
 
     return df
 

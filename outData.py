@@ -20,4 +20,4 @@ def OutPut(filepath,enum,etp,df):
 	f = open(filepath+"event.json", 'w', encoding='utf-8')
 	f.write(dfp_json)
 	f.close()
-	print("JSON GENERATE -> ")
+	print("event JSON GENERATE",enum,"ON tier",etp,"->")
