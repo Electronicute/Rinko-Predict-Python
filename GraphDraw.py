@@ -31,7 +31,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         return eventName,eventStart,eventEnd
         
     def dataTrans(eventNumber,AreaCode,enum,etp):
-        jsondir=JsonPath+str(AreaCode)+"/"+"e"+str(enum)+"/"+"t"+str(etp)+"/"+"event.json" #此处要改！！
+        jsondir=JsonPath+str(AreaCode)+"/"+"e"+str(enum)+"/"+"t"+str(etp)+"/"+"event.json" 
         predictJson=open(jsondir)
         preDict=json.load(predictJson)
         pctList=[]
@@ -121,7 +121,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         nowTime=timestamp_full(time.time())
         ptTimestamp=(pctList[-1])*0.01*(eventEnd-eventStart)+eventStart
         ptTime=timestamp_full(ptTimestamp)
-        print('正在生成<',eventName,'>'+rankList[rankType]+'分数线信息')    
+        print('正在生成<',eventName,'>'+rankList[rankType]+'分数线图片')    
        
         im = Image.open("resources/background70.png")
         
@@ -163,6 +163,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         d.text((scorex1,3100),ptNow,font=fnt2, fill=(0,0,0,255))
         d.text((scorex2,3690),ptPredict,font=fnt2, fill=(0,0,0,255))
         d.text((2480,3250),ptTime,font=fnt3, fill=(0,0,0,255))
+        d.text((3000,3350),"("+str(int(pctList[-1]))+"%)",font=fnt3, fill=(0,0,0,255))
         d.text((2480,3850),endTime,font=fnt3, fill=(0,0,0,255))
         d.text((1280,3750),nowTime,font=fnt3, fill=(0,0,0,255))
         
@@ -232,7 +233,7 @@ def GetDataPic(areacode,basePath,JsonPath,PredNow=True,Benum=0):
     else:
         for typ in range(0,3):
                 main(Benum,typ,areacode,basePath,JsonPath)
-    print('完成时间',datetime.datetime.fromtimestamp(time.time()).strftime("%m/%d %H:%M:%S"))
+    print('操作完成时间',datetime.datetime.fromtimestamp(time.time()).strftime("%m/%d %H:%M:%S"))
 
 
 
