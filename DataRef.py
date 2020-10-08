@@ -68,7 +68,7 @@ def GetDataStorage(dirs,AreaCode=3,PredNow=True,Benum=0):
             enum=int(Dict['rS'][1:])
             for RankType in range(0,3):
                 try:
-                    __Main__RunPred(dirs,enum,RankType,AreaCode,6,1)
+                    __Main__RunPred(dirs,enum,RankType,AreaCode,3,1)
                     #this is a predict-ivity reference, Which is Encoded in this frame of function.
                 except:
                     print("ON Main Func,",enum,"->",RankType,"'s Pred is Fail")
@@ -78,7 +78,7 @@ def GetDataStorage(dirs,AreaCode=3,PredNow=True,Benum=0):
     else:
         for RankType in range(0,3):
             try:
-                __Main__RunPred(dirs,enum,RankType,AreaCode,6,1)
+                __Main__RunPred(dirs,enum,RankType,AreaCode,3,1)
                 #this is a predict-ivity reference, Which is Encoded in this frame of function.
             except:
                 print("ON Main Func,",enum,"->",RankType,"'s Pred is Fail")

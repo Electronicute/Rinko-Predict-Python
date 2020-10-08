@@ -141,8 +141,10 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         
         chart3= Image.open('resources/ring.png')
         region3 = chart3
+        region3 = region3.resize((1449,1449))
         region3=region3.crop((180,180,1270,1270))
         box3=(30,2850,1120,3940)
+
         im.paste(region3,box3,region3)
         im=im.convert('RGBA')
         txt=Image.new('RGBA', im.size, (0,0,0,0))
@@ -165,18 +167,20 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         d.text((1280,3750),nowTime,font=fnt3, fill=(0,0,0,255))
         
         out=Image.alpha_composite(im,txt)
-        time.sleep(0.1)
         out=out.resize((1750,2500))
         filename=basePath+rankList2[rankType]+'.png'
         out.save(filename)
-  
+
+            
     def noptHandle(eventName,basePath,rankType=4):
         im = Image.open("resources/noPt70.png")
         txt=Image.new('RGBA', im.size, (0,0,0,0))
         fnt=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 50)
+        fnt2=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 20)
         titlex=400-(len(eventName)+2)/2*50
         d=ImageDraw.Draw(txt) 
         d.text((titlex,100),'《'+eventName+'》',font=fnt, fill=(0,0,0,255))
+        d.text((450,500),'制图时间：'+timestamp_full(time.time()),font=fnt2, fill=(0,0,0,255))
         out=Image.alpha_composite(im,txt)
         if rankType==4:
             for filename0 in ['e100.png','e1k.png','e2k.png']:
