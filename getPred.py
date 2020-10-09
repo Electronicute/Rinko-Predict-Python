@@ -98,7 +98,7 @@ def PreProcessData(filepath,enum,etp,df,pred_length=6,gamma_threshold=1):
 		#LB Span Block : math.ceil((1 - int(df["0"][num-1])/df["0"][len(df)-1])*len(df))
 		#Lower Linear Block : num - PCT (if<0 then,LLB=pred_length)
 		try:
-			LBSB = math.ceil((1 - float(df.pct[num-1])/df.pct[len(df)-1])*len(df))
+			LBSB = math.ceil((1 - float(df.pct[num-1])/100)*len(df))
 			LLB = num-LBSB	
 			if (LLB<=pred_length+1):
 				LLB = pred_length-1	
