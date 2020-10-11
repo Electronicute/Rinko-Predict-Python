@@ -25,19 +25,24 @@ def get(filepath,eventNumber,rankType,regionType=3,showComplete=True):
     timediff=eventEnd-eventStart
     epDict0=(json.loads(eventData))['rS']['cutoffs']
     
-    itemcount=0 #数据审核
     epDict=[]
-    for item in epDict0:
-        if itemcount>=1 and itemcount<(len(epDict0)-1):
-            pt1=epDict[itemcount-1]
-            pt2=int(item['ep'])
-            pt3=epDict[itemcount+1]
-            if pt1<pt2 and pt2>pt3:
-                pass
+    for itemcount in range(0,len(epDict0)):
+
+        try:
+            if len(epDict0)>3 and 1<= itemcount<(len(epDict0)-1):
+
+                pt1=int(epDict0[itemcount-1]['ep'])
+                pt2=int(epDict0[itemcount]['ep'])
+                pt3=int(epDict0[itemcount+1]['ep'])
+                if pt1<pt2 and pt2>pt3:
+                    pass
+                else:
+                    epDict.append(epDict0[itemcount])
             else:
-                epDict.append(item)
-        else:
-            pass
+                epDict.append(epDict0[itemcount])
+            
+        except Exception as e:
+            print(e)
 
     epjson=json.dumps(epDict)
 
