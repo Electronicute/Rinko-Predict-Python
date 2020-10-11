@@ -89,7 +89,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         fig.savefig('resources/ring.png',dpi=450, transparent=True, bbox_inches='tight')
         plt.close() 
         
-        if  pctList[-1]>=75:
+        if  len(pctList)>=5 and pctList[-3]>=90:
             plt.figure().add_subplot(111)
             plt.ticklabel_format(style='plain', axis='y')
             plt.xlabel('进度(%)')
@@ -157,12 +157,13 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         fnt3=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 120)
         
         d=ImageDraw.Draw(txt) 
-        titlex=1750-(len(eventName)+2)/2*160
-        d.text((titlex,100),'《'+eventName+'》',font=fnt, fill=(0,0,0,255))
+        title='《'+eventName+'》'
+        titlex=1750-(fnt.getsize(title))[0]/2
+        d.text((titlex,100),title,font=fnt, fill=(0,0,0,255))
         d.text((3020,360),rankList[rankType],font=fnt3, fill=(0,0,0,255))
         d.text((400,3415),str(progress)+'%',font=fnt2, fill=(0,0,0,255))
-        scorex1=3100-len(ptNow)/2*160
-        scorex2=3100-len(ptPredict)/2*160
+        scorex1=2875-(fnt2.getsize(ptNow))[0]/2
+        scorex2=2875-(fnt2.getsize(ptPredict))[0]/2
         d.text((scorex1,3100),ptNow,font=fnt2, fill=(0,0,0,255))
         d.text((scorex2,3690),ptPredict,font=fnt2, fill=(0,0,0,255))
         d.text((2480,3250),ptTime,font=fnt3, fill=(0,0,0,255))
@@ -181,9 +182,10 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         txt=Image.new('RGBA', im.size, (0,0,0,0))
         fnt=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 50)
         fnt2=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 20)
-        titlex=400-(len(eventName)+2)/2*50
+        title='《'+eventName+'》'
+        titlex=400-(fnt.getsize(title))[0]/2
         d=ImageDraw.Draw(txt) 
-        d.text((titlex,100),'《'+eventName+'》',font=fnt, fill=(0,0,0,255))
+        d.text((titlex,100),title,font=fnt, fill=(0,0,0,255))
         d.text((450,500),'制图时间：'+timestamp_full(time.time()),font=fnt2, fill=(0,0,0,255))
         out=Image.alpha_composite(im,txt)
         flist=['e100.png','e1k.png','e2k.png']
@@ -236,7 +238,7 @@ def GetDataPic(areacode,basePath,JsonPath,PredNow=True,Benum=0):
     else:
         for typ in range(0,3):
                 main(Benum,typ,areacode,basePath,JsonPath)
-    print('操作完成时间',datetime.datetime.fromtimestamp(time.time()).strftime("%m/%d %H:%M:%S"))
+   
 
 
 

@@ -1,7 +1,7 @@
 import os
 import DataRef
 import GraphDraw
-import time
+import time,datetime
 if os.name=='nt':
     imgbasePath='D:/asd/now/'
     basePath='D:/asd/'
@@ -13,7 +13,7 @@ else:
 areacode=3          #country Code
 TogglePara = True  #if PredNow please to change to True
 #test only
-Bnum=70          #eventNumber
+Bnum=70          #eventNumber,NO use if above is True
     
     
 #make sure of Dir is create
@@ -34,8 +34,11 @@ while True:
         GraphDraw.GetDataPic(areacode,imgbasePath,basePath,TogglePara,Bnum)   #use file to Pic
     except Exception as e2:
         print('Draw Fail!',e2)
-    
+
+    print('操作完成时间',datetime.datetime.fromtimestamp(time.time()).strftime("%m/%d %H:%M:%S"))
+   
     if os.name=='nt':
         break
     else: 
         time.sleep(180)
+        os.system('clear')

@@ -23,7 +23,22 @@ def get(filepath,eventNumber,rankType,regionType=3,showComplete=True):
     eventStart=int(eventDict['Data']['startAt'][3])/1000
     eventEnd=int(eventDict['Data']['endAt'][3])/1000
     timediff=eventEnd-eventStart
-    epDict=(json.loads(eventData))['rS']['cutoffs']
+    epDict0=(json.loads(eventData))['rS']['cutoffs']
+    
+    itemcount=0 #数据审核
+    epDict=[]
+    for item in epDict0:
+        if itemcount>=1 and itemcount<(len(epDict0)-1):
+            pt1=epDict[itemcount-1]
+            pt2=int(item['ep'])
+            pt3=epDict[itemcount+1]
+            if pt1<pt2 and pt2>pt3:
+                pass
+            else:
+                epDict.append(item)
+        else:
+            pass
+
     epjson=json.dumps(epDict)
 
     df = pd.read_json(epjson,orient='records',typ='frame')
