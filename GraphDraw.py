@@ -20,34 +20,37 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         dateArray = datetime.datetime.fromtimestamp(x)
         return dateArray.strftime("%m/%d %H:%M:%S")
     
-    def basicGet(eventNumber,rankType):
+    def basicGet(eventNumber,rankType,areacode):
         hd={'User_Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1'}
         url='http://bandoriapi.cn/Query/Event/eventDataTracker/'+str(areacode)+'/'+str(eventNumber)+'/'+str(rankType)
         eventData=requests.get(url,headers=hd).text
         eventDict=json.loads(eventData)
-        eventName=eventDict['Data']['eventName'][3]
-        eventStart=int(eventDict['Data']['startAt'][3])/1000
-        eventEnd=int(eventDict['Data']['endAt'][3])/1000
+        eventName=eventDict['Data']['eventName'][areacode]
+        eventStart=int(eventDict['Data']['startAt'][areacode])/1000
+        eventEnd=int(eventDict['Data']['endAt'][areacode])/1000
         return eventName,eventStart,eventEnd
         
     def dataTrans(eventNumber,AreaCode,enum,etp):
         jsondir=JsonPath+str(AreaCode)+"/"+"e"+str(enum)+"/"+"t"+str(etp)+"/"+"event.json" 
-        predictJson=open(jsondir)
-        preDict=json.load(predictJson)
-        pctList=[]
-        ptList=[]
-        slpList=[]
-        ufinList=[]
-        finList=[]
-        bfinList=[]
-        for items in preDict:
-            pctList.append(items['PCT'])
-            ptList.append(items['REALY'])
-            slpList.append(items['SLPSLP'])
-            ufinList.append(items['UFIN'])
-            finList.append(items['FIN'])
-            bfinList.append(items['BFIN'])
-        return pctList,ptList,slpList,ufinList,finList,bfinList
+        if not os.path.exists(jsondir):
+            noptHandle(etp)
+        else:
+            predictJson=open(jsondir)
+            preDict=json.load(predictJson)
+            pctList=[]
+            ptList=[]
+            slpList=[]
+            ufinList=[]
+            finList=[]
+            bfinList=[]
+            for items in preDict:
+                pctList.append(items['PCT'])
+                ptList.append(items['REALY'])
+                slpList.append(items['SLPSLP'])
+                ufinList.append(items['UFIN'])
+                finList.append(items['FIN'])
+                bfinList.append(items['BFIN'])
+            return pctList,ptList,slpList,ufinList,finList,bfinList
     
     def graphDraw(pctList,ptList,slpList,ufinList,finList,bfinList):    
         plt.rcParams['savefig.dpi'] = 600
@@ -86,7 +89,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         fig.savefig('resources/ring.png',dpi=450, transparent=True, bbox_inches='tight')
         plt.close() 
         
-        if  pctList[-1]>=85:
+        if  pctList[-1]>=75:
             plt.figure().add_subplot(111)
             plt.ticklabel_format(style='plain', axis='y')
             plt.xlabel('进度(%)')
@@ -96,10 +99,10 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             plt.scatter(pctList[-5:],ufinList[-5:],color='red',marker='*')
             plt.scatter(pctList[-5:],finList[-5:],color='orange',marker='o')
             plt.scatter(pctList[-5:],bfinList[-5:],color='green',marker='*')
-            plt.text(pctList[-1],ufinList[-1]*1.02,'%.0f'%finList[-1],ha = 'center',va = 'bottom')  
+            plt.text(pctList[-1],ufinList[-1]*1.02,'%.0f'%ufinList[-1],ha = 'center',va = 'bottom')  
             plt.text(pctList[-1],finList[-1],'%.0f'%finList[-1],ha = 'center',va = 'bottom')    
             plt.text(pctList[-1],ptList[-1]*0.95,'%.0f'%ptList[-1],ha = 'center',va = 'bottom')  
-            plt.legend(['实时分数线','预测分数线(均值)','预测分数线(上限)','校正点'],loc='upper left')
+            plt.legend(['实时分数线','预测分数线(上限)','预测分数线(均值)','校正点'],loc='upper left')
             plt.savefig('resources/Detailchart.png', dpi=600, bbox_inches='tight')
             plt.close()  
             able=1
@@ -109,7 +112,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
     
     def picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able,basePath):
         rankList=['[T 100]','[T1000]','[T2000]']
-        rankList2=['e100','e1k','e2k']
+        flist=['e100.png','e1k.png','e2k.png']
         progress=int(((time.time()-eventStart)/(eventEnd-eventStart)*100))
         if progress>100:
             progress=100
@@ -123,7 +126,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         ptTime=timestamp_full(ptTimestamp)
         print('正在生成<',eventName,'>'+rankList[rankType]+'分数线图片')    
        
-        im = Image.open("resources/background70.png")
+        im = Image.open("resources/background.png")
         
         box=(75,500,3425,2810)
         chart1= Image.open('resources/chart.png')
@@ -169,12 +172,12 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         
         out=Image.alpha_composite(im,txt)
         out=out.resize((1750,2500))
-        filename=basePath+rankList2[rankType]+'.png'
+        filename=basePath+flist[rankType]
         out.save(filename)
 
             
     def noptHandle(eventName,basePath,rankType=4):
-        im = Image.open("resources/noPt70.png")
+        im = Image.open("resources/noPt.png")
         txt=Image.new('RGBA', im.size, (0,0,0,0))
         fnt=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 50)
         fnt2=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 20)
@@ -183,16 +186,16 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         d.text((titlex,100),'《'+eventName+'》',font=fnt, fill=(0,0,0,255))
         d.text((450,500),'制图时间：'+timestamp_full(time.time()),font=fnt2, fill=(0,0,0,255))
         out=Image.alpha_composite(im,txt)
+        flist=['e100.png','e1k.png','e2k.png']
         if rankType==4:
-            for filename0 in ['e100.png','e1k.png','e2k.png']:
+            for filename0 in flist:
                 filename=basePath+filename0
                 out.save(filename)
         else:
-            flist=['e100.png','e1k.png','e2k.png']
             filename=basePath+flist[rankType]
             out.save(filename)
     
-    (eventName,eventStart,eventEnd)=basicGet(eventNumber,rankType)
+    (eventName,eventStart,eventEnd)=basicGet(eventNumber,rankType,areacode)
     try:
         (pctList,ptList,slpList,ufinList,finList,bfinList)=dataTrans(eventNumber,areacode,eventNumber,rankType)
         if len(pctList)>=3:
