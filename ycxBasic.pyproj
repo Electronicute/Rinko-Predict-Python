@@ -41,13 +41,21 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitattributes" />
-    <Content Include="background.png" />
-    <Content Include="background70.png" />
-    <Content Include="Helvetica Bold.ttf" />
-    <Content Include="HYZhengYuan-55W.ttf" />
-    <Content Include="noevent.png" />
-    <Content Include="noPt.png" />
-    <Content Include="noPt70.png" />
+    <Content Include="resources\background.png" />
+    <Content Include="resources\background70.png" />
+    <Content Include="resources\chart.png" />
+    <Content Include="resources\Detailchart.png" />
+    <Content Include="resources\Helvetica Bold.ttf" />
+    <Content Include="resources\HYZhengYuan-55W.ttf" />
+    <Content Include="resources\noevent.png" />
+    <Content Include="resources\noPt.png" />
+    <Content Include="resources\noPt70.png" />
+    <Content Include="resources\ring.png" />
+    <Content Include="resources\图片模板70期.psd" />
+    <Content Include="resources\新模板.psd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="resources\" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in

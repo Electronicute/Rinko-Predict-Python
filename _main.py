@@ -6,13 +6,16 @@ if os.name=='nt':
     imgbasePath='D:/asd/now/'
     basePath='D:/asd/'
 else:
+
     imgbasePath='/root/web/rinkoapi/curevent/'
     basePath='/root/web/rinkoapi/ycxcore/'
     
-areacode=3          #country Code
-TogglePara = True #if PredNow please to change to True
-#test only
-Bnum=70          #eventNumber,NO use if above is True
+areacode=3          
+#country Code
+TogglePara = True   
+#if PredNow please to change to True
+Bnum=1              
+#eventNumber,NO-use if above is True
     
     
 #make sure of Dir is create
