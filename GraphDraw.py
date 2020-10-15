@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import json
 import datetime,time
-import requests
+import requests,urllib
 import PIL.Image as Image
 import PIL.ImageFont as ImageFont
 import PIL.ImageDraw as ImageDraw
@@ -28,8 +28,26 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         eventName=eventDict['Data']['eventName'][areacode]
         eventStart=int(eventDict['Data']['startAt'][areacode])/1000
         eventEnd=int(eventDict['Data']['endAt'][areacode])/1000
-        return eventName,eventStart,eventEnd
         
+        #这里获取bannerTitle（临时）
+        pic_filename='resources/'+str(eventNumber)+'title.png'
+        if not os.path.exists(pic_filename):
+            print('Downloading titleImage...')
+            url2='http://bandoriapi.cn/Query/Event/eventGenData/'+str(eventNumber)+'/'+str(areacode)+'/assetBundleName'
+            eventData=requests.get(url2,headers=hd).text
+            eventDict=json.loads(eventData)
+            assetName=eventDict["rS"]
+            pic_url='https://bestdori.com/assets/cn/event/'+assetName+'/images_rip/logo.png'
+            r=requests.get(pic_url,headers=hd)
+            with open(pic_filename,"wb") as f:
+                f.write(r.content)
+            f.close()
+
+        else:
+            pass
+
+        return eventName,eventStart,eventEnd
+
     def dataTrans(eventNumber,AreaCode,enum,etp):
         jsondir=JsonPath+str(AreaCode)+"/"+"e"+str(enum)+"/"+"t"+str(etp)+"/"+"event.json" 
         if not os.path.exists(jsondir):
@@ -109,9 +127,11 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         else:
             able=0   
         return able
-    
+
+
+
     def picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able,basePath):
-        rankList=['[T 100]','[T1000]','[T2000]']
+        rankList=['[TOP  100]','[TOP 1000]','[TOP 2000]']
         flist=['e100.png','e1k.png','e2k.png']
         progress=int(((time.time()-eventStart)/(eventEnd-eventStart)*100))
         if progress>100:
@@ -126,15 +146,15 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         ptTime=timestamp_full(ptTimestamp)
         print('正在生成<',eventName,'>'+rankList[rankType]+'分数线图片')    
        
-        im = Image.open("resources/background.png")
+        im = Image.open("resources/backgroundNEO.png")
         
-        box=(75,500,3425,2810)
+        box=(0,880,3500,3180)
         chart1= Image.open('resources/chart.png')
         region = chart1
         region = region.resize((box[2] - box[0], box[3] - box[1]))
         im.paste(region, box)
         if able==1:
-            box2= (75,500,1750,1690)
+            box2= (0,880,1680,2070)
             chart2= Image.open('resources/Detailchart.png')
             region2 = chart2
             region2 = region2.resize((box2[2] - box2[0], box2[3] - box2[1]))
@@ -144,32 +164,43 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         
         chart3= Image.open('resources/ring.png')
         region3 = chart3
-        region3 = region3.resize((1449,1449))
-        region3=region3.crop((180,180,1270,1270))
-        box3=(30,2850,1120,3940)
-
+        region3 = region3.resize((1450,1450)) 
+        region3=region3.crop((175,175,1280,1280))
+        box3=(78,3290,933,4145)
+        region3 = region3.resize((box3[2] - box3[0], box3[3] - box3[1]))
         im.paste(region3,box3,region3)
+
+        titlepic=Image.open('resources/'+str(eventNumber)+'title.png')
+        region4=titlepic
+        box4=(222,77,1474,631)
+        region4=region4.resize((box4[2] - box4[0], box4[3] - box4[1]))
+        im.paste(region4,box4,region4)
+
         im=im.convert('RGBA')
         txt=Image.new('RGBA', im.size, (0,0,0,0))
         
         fnt=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 160)
-        fnt2=ImageFont.truetype("resources/Helvetica Bold.ttf", 160) 
-        fnt3=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 120)
+        fnt2=ImageFont.truetype("resources/Helvetica Bold.ttf", 165) 
+        fnt3=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 90)
         
         d=ImageDraw.Draw(txt) 
-        title='《'+eventName+'》'
-        titlex=1750-(fnt.getsize(title))[0]/2
-        d.text((titlex,100),title,font=fnt, fill=(0,0,0,255))
-        d.text((3020,360),rankList[rankType],font=fnt3, fill=(0,0,0,255))
-        d.text((400,3415),str(progress)+'%',font=fnt2, fill=(0,0,0,255))
-        scorex1=2875-(fnt2.getsize(ptNow))[0]/2
-        scorex2=2875-(fnt2.getsize(ptPredict))[0]/2
-        d.text((scorex1,3100),ptNow,font=fnt2, fill=(0,0,0,255))
-        d.text((scorex2,3690),ptPredict,font=fnt2, fill=(0,0,0,255))
-        d.text((2480,3250),ptTime,font=fnt3, fill=(0,0,0,255))
-        d.text((3000,3350),"("+str(int(pctList[-1]))+"%)",font=fnt3, fill=(0,0,0,255))
-        d.text((2480,3850),endTime,font=fnt3, fill=(0,0,0,255))
-        d.text((1280,3750),nowTime,font=fnt3, fill=(0,0,0,255))
+        
+        d.text((1844,3200),rankList[rankType],font=fnt2, fill=(0,0,0,255))
+        precentx=514-fnt2.getsize(str(progress)+'%')[0]/2
+
+        d.text((precentx,3750),str(progress)+'%',font=fnt2, fill=(0,0,0,255))
+        scorex1=2070-(fnt2.getsize(ptNow))[0]/2
+        scorex2=2827-(fnt2.getsize(ptPredict))[0]/2
+        d.text((scorex1,3435),ptNow,font=fnt2, fill=(255,0,0,255))
+        d.text((scorex2,3840),ptPredict,font=fnt2, fill=(0,0,0,255))
+
+        nowPredictpt='------'
+        scorex3=1635-(fnt.getsize(nowPredictpt))[0]/2
+        d.text((scorex3,3840),nowPredictpt,font=fnt, fill=(0,0,0,255))
+
+        d.text((2480,3490),ptTime+"("+str(int(pctList[-1]))+"%)",font=fnt3, fill=(0,0,0,255))
+        d.text((2510,4033),endTime,font=fnt3, fill=(0,0,0,255))
+        d.text((1300,4033),nowTime,font=fnt3, fill=(0,0,0,255))
         
         out=Image.alpha_composite(im,txt)
         out=out.resize((1750,2500))
@@ -205,9 +236,9 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able,basePath)    
         else:
             noptHandle(eventName,basePath,rankType)
-    except:
+    except Exception as e:
         noptHandle(eventName,basePath,rankType)
-
+       
         
 def nopicHandle(imgbasePath):
     for filename0 in ['e100.png','e1k.png','e2k.png']:
