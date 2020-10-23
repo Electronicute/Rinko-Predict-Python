@@ -210,6 +210,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             
     def noptHandle(eventName,basePath,rankType=4):
         im = Image.open("resources/noPt.png")
+        im=im.convert('RGBA')
         txt=Image.new('RGBA', im.size, (0,0,0,0))
         fnt=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 50)
         fnt2=ImageFont.truetype("resources/HYZhengYuan-55W.ttf", 20)
