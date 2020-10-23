@@ -137,9 +137,12 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         if progress>100:
             progress=100
         ptNow=str(ptList[-1])
-        ptPredict=str('%.0f'%finList[-1])
+        ptPredict=finList[-1]
         if ptPredict==None:
             ptPredict='--'
+            print('注意：当前最终点没有预测信息')
+        else:
+            ptPredict=str('%.0f'%finList[-1])
         endTime=timestamp_full(eventEnd)
         nowTime=timestamp_full(time.time())
         ptTimestamp=(pctList[-1])*0.01*(eventEnd-eventStart)+eventStart
@@ -237,8 +240,9 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able,basePath)    
         else:
             noptHandle(eventName,basePath,rankType)
-    except Exception as e:
+    except Exception as ex:
         noptHandle(eventName,basePath,rankType)
+        print(ex)
        
         
 def nopicHandle(imgbasePath):
