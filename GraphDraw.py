@@ -58,19 +58,31 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             pctList=[]
             ptList=[]
             slpList=[]
+            ufinList0=[]
+            finList0=[]
+            bfinList0=[]
             ufinList=[]
             finList=[]
             bfinList=[]
+            predPct=[]
             for items in preDict:
                 pctList.append(items['PCT'])
                 ptList.append(items['REALY'])
                 slpList.append(items['SLPSLP'])
-                ufinList.append(items['UFIN'])
-                finList.append(items['FIN'])
-                bfinList.append(items['BFIN'])
-            return pctList,ptList,slpList,ufinList,finList,bfinList
+                ufinList0.append(items['UFIN'])
+                finList0.append(items['FIN'])
+                bfinList0.append(items['BFIN'])
+            for I in finList0:
+                if I!=None:
+                    itemNum=finList0.index(I)
+                    predPct.append(pctList[itemNum])
+                    finList.append(I)
+                    ufinList.append(ufinList0[itemNum])
+                    bfinList.append(bfinList0[itemNum])
+
+            return pctList,ptList,slpList,ufinList,finList,bfinList,predPct
     
-    def graphDraw(pctList,ptList,slpList,ufinList,finList,bfinList):    
+    def graphDraw(pctList,ptList,slpList,ufinList,finList,bfinList,predPct):    
         plt.rcParams['savefig.dpi'] = 600
         plt.rcParams['figure.dpi'] = 600
         ax=plt.figure().add_subplot(111)
@@ -88,10 +100,11 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             progress=100
             
         legendList=['实时分数线']
+
         if finList[-1]!=None:
             plt.vlines(progress,0,finList[-1]*1.2,color='green',ls='--')
-            plt.plot(pctList,finList,marker='*',ls='--',color='red')
-            plt.text(pctList[-1],finList[-1]*1.05,'%.0f'%finList[-1],ha = 'center',va = 'bottom')    
+            plt.plot(predPct,finList,marker='*',ls='--',color='red')
+            plt.text(predPct[-1],finList[-1]*1.05,'%.0f'%finList[-1],ha = 'center',va = 'bottom')    
             legendList.append('预测最终分数')
         else:
             plt.vlines(progress,0,ptList[-1]*1.2,color='green',ls='--')
@@ -234,9 +247,9 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
     
     (eventName,eventStart,eventEnd)=basicGet(eventNumber,rankType,areacode)
     try:
-        (pctList,ptList,slpList,ufinList,finList,bfinList)=dataTrans(eventNumber,areacode,eventNumber,rankType)
+        (pctList,ptList,slpList,ufinList,finList,bfinList,predPct)=dataTrans(eventNumber,areacode,eventNumber,rankType)
         if len(pctList)>=3:
-            able=graphDraw(pctList,ptList,slpList,ufinList,finList,bfinList)
+            able=graphDraw(pctList,ptList,slpList,ufinList,finList,bfinList,predPct)
             picDraw(pctList,ptList,slpList,ufinList,finList,bfinList,eventName,eventStart,eventEnd,rankType,able,basePath)    
         else:
             noptHandle(eventName,basePath,rankType)
