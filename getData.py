@@ -15,7 +15,7 @@ def get(filepath,eventNumber,rankType,regionType=3,showComplete=True):
     this can also trigs a output of isDownloadComplete, if not set 4th parameter to *False
     '''
     hd={'User_Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1'}
-    url='http://47.105.40.194:30002/Query/Event/eventDataTracker/'+str(regionType)+'/'+str(eventNumber)+'/'+str(rankType)
+    url='http://bandoriapi.cn/Query/Event/eventDataTracker/'+str(regionType)+'/'+str(eventNumber)+'/'+str(rankType)
     
     eventData=requests.get(url,headers=hd).text
     eventDict=json.loads(eventData)

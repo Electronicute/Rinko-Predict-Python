@@ -22,7 +22,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
     
     def basicGet(eventNumber,rankType,areacode):
         hd={'User_Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1'}
-        url='http://47.105.40.194:30002/Query/Event/eventDataTracker/'+str(areacode)+'/'+str(eventNumber)+'/'+str(rankType)
+        url='http://bandoriapi.cn/Query/Event/eventDataTracker/'+str(areacode)+'/'+str(eventNumber)+'/'+str(rankType)
         eventData=requests.get(url,headers=hd).text
         eventDict=json.loads(eventData)
         eventName=eventDict['Data']['eventName'][areacode]
@@ -33,7 +33,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         pic_filename='resources/'+str(eventNumber)+'title.png'
         if not os.path.exists(pic_filename):
             print('Downloading titleImage...')
-            url2='http://47.105.40.194:30002/Query/Event/eventGenData/'+str(eventNumber)+'/'+str(areacode)+'/assetBundleName'
+            url2='http://bandoriapi.cn/Query/Event/eventGenData/'+str(eventNumber)+'/'+str(areacode)+'/assetBundleName'
             eventData=requests.get(url2,headers=hd).text
             eventDict=json.loads(eventData)
             assetName=eventDict["rS"]
