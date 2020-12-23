@@ -7,8 +7,8 @@ if os.name=='nt':
     basePath='D:/asd/'
 else:
 
-    imgbasePath='/root/web/rinkoapi/curevent/'
-    basePath='/root/web/rinkoapi/ycxcore/'
+    imgbasePath='/data/web/api/curevent/'
+    basePath='/data/web/api/ycxcore/'
     
 areacode=3          
 #country Code
