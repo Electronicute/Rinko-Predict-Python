@@ -219,7 +219,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         d.text((1300,4033),nowTime,font=fnt3, fill=(0,0,0,255))
         
         out=Image.alpha_composite(im,txt)
-        out=out.resize((1750,2500))
+        out=out.resize((1400,2000))
         filename=basePath+flist[rankType]
         out.save(filename)
 
