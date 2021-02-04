@@ -65,7 +65,7 @@ def GetDataStorage(dirs,AreaCode=3,PredNow=True,Benum=0):
         Dict=json.loads(Data)
 
         if Dict['rS']!='N00':
-            enum=int(Dict['rS'][1:])
+            enum=int(Dict['rS']['Data'][1:])
             for RankType in range(0,3):
                 try:
                     __Main__RunPred(dirs,enum,RankType,AreaCode,3,1)
