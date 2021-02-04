@@ -25,9 +25,9 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         url='http://bandoriapi.cn/Query/Event/eventDataTracker/'+str(areacode)+'/'+str(eventNumber)+'/'+str(rankType)
         eventData=requests.get(url,headers=hd).text
         eventDict=json.loads(eventData)
-        eventName=eventDict['Data']['eventName'][areacode]
-        eventStart=int(eventDict['Data']['startAt'][areacode])/1000
-        eventEnd=int(eventDict['Data']['endAt'][areacode])/1000
+        eventName=eventDict['rS']['EventData']['eventName'][areacode]
+        eventStart=int(eventDict['rS']['EventData']['startAt'][areacode])/1000
+        eventEnd=int(eventDict['rS']['EventData']['endAt'][areacode])/1000
         
         #这里获取bannerTitle（临时）
         pic_filename='resources/'+str(eventNumber)+'title.png'
@@ -36,7 +36,7 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
             url2='http://bandoriapi.cn/Query/Event/eventGenData/'+str(eventNumber)+'/'+str(areacode)+'/assetBundleName'
             eventData=requests.get(url2,headers=hd).text
             eventDict=json.loads(eventData)
-            assetName=eventDict["rS"]
+            assetName=eventDict["rS"]["Data"]
             pic_url='https://bestdori.com/assets/cn/event/'+assetName+'/images_rip/logo.png'
             r=requests.get(pic_url,headers=hd)
             with open(pic_filename,"wb") as f:
