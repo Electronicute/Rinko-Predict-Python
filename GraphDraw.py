@@ -28,23 +28,37 @@ def main(eventNumber,rankType,areacode,basePath,JsonPath):
         eventName=eventDict['rS']['EventData']['eventName'][areacode]
         eventStart=int(eventDict['rS']['EventData']['startAt'][areacode])/1000
         eventEnd=int(eventDict['rS']['EventData']['endAt'][areacode])/1000
-        
-        #这里获取bannerTitle（临时）
-        pic_filename='resources/'+str(eventNumber)+'title.png'
-        if not os.path.exists(pic_filename):
-            print('Downloading titleImage...')
-            url2='http://bandoriapi.cn/Query/Event/eventGenData/'+str(eventNumber)+'/'+str(areacode)+'/assetBundleName'
-            eventData=requests.get(url2,headers=hd).text
-            eventDict=json.loads(eventData)
-            assetName=eventDict["rS"]["Data"]
-            pic_url='https://bestdori.com/assets/cn/event/'+assetName+'/images_rip/logo.png'
-            r=requests.get(pic_url,headers=hd)
-            with open(pic_filename,"wb") as f:
-                f.write(r.content)
-            f.close()
+        try:
+            #这里获取bannerTitle（临时）
+            pic_filename='resources/'+str(eventNumber)+'title.png'
+            if not os.path.exists(pic_filename):
+                print('Downloading titleImage...')
+                url2='https://bestdori.com/api/events/'+str(eventNumber)+'.json'
+                eventData=requests.get(url2,headers=hd).text
+                eventDict=json.loads(eventData)
+                assetName=eventDict['assetBundleName']
+                areatext='cn'
 
-        else:
+                if areacode==0:
+                    areatext='jp'
+                elif areacode==1:
+                    areatext='en'
+                elif areacode==2:
+                    areatext='tw'
+                elif areacode==4:
+                    areatext='kr'
+
+                pic_url='https://bestdori.com/assets/'+areatext+'/event/'+assetName+'/images_rip/logo.png'
+                r=requests.get(pic_url,headers=hd)
+                with open(pic_filename,"wb") as f:
+                    f.write(r.content)
+                f.close()
+            else:
+                pass
+        except:
             pass
+        
+            
 
         return eventName,eventStart,eventEnd
 
@@ -277,8 +291,8 @@ def GetDataPic(areacode,basePath,JsonPath,PredNow=True,Benum=0):
         url='http://bandoriapi.cn/Query/Event/eventNow/'+str(areacode)
         Data=requests.get(url,headers=hd).text
         Dict=json.loads(Data)
-        enum=int(Dict['rS'][1:])
-        if Dict['rS']!='N00':
+        enum=int(Dict['rS']['Data'][1:])
+        if Dict['rS']['Data']!='N00':
             for typ in range(0,3):
                 main(enum,typ,areacode,basePath,JsonPath)
 

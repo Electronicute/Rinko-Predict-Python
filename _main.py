@@ -16,28 +16,28 @@ TogglePara = True
 #if PredNow please to change to True
 Bnum=1              
 #eventNumber,NO-use if above is True
-    
-    
-#make sure of Dir is create
-if not os.path.exists(imgbasePath):
-    os.mkdir(imgbasePath)
-if not os.path.exists(basePath):
-    os.mkdir(basePath)
-if not os.path.exists(basePath+str(x)):
-    os.mkdir(basePath+str(x))
 
 while True:
-    try:
-        DataRef.GetDataStorage(basePath,x,TogglePara,Bnum)             #make sure that we've already storage the file
-    except Exception as e1:
-        print('Analyse Fail!',e1)
+    for x in range(3,4):
+        #make sure of Dir is create
+        if not os.path.exists(imgbasePath):
+            os.mkdir(imgbasePath)
+        if not os.path.exists(basePath):
+            os.mkdir(basePath)
+        if not os.path.exists(basePath+str(x)):
+            os.mkdir(basePath+str(x))
 
-    try:
-        GraphDraw.GetDataPic(x,imgbasePath,basePath,TogglePara,Bnum)   #use file to Pic
-    except Exception as e2:
-        print('Draw Fail!',e2)
+        try:
+            DataRef.GetDataStorage(basePath,x,TogglePara,Bnum)             #make sure that we've already storage the file
+        except Exception as e1:
+            print('Analyse Fail!',e1)
 
-    print('操作完成时间 区服*->',x,'<-',datetime.datetime.fromtimestamp(time.time()).strftime("%m/%d %H:%M:%S"))
+        try:
+            GraphDraw.GetDataPic(x,imgbasePath,basePath,TogglePara,Bnum)   #use file to Pic
+        except Exception as e2:
+            print('Draw Fail!',e2)
+
+        print('操作完成时间 区服*->',x,'<-',datetime.datetime.fromtimestamp(time.time()).strftime("%m/%d %H:%M:%S"))
    
     if os.name=='nt':
         break
