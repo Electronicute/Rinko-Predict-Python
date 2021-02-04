@@ -19,11 +19,11 @@ def get(filepath,eventNumber,rankType,regionType=3,showComplete=True):
     
     eventData=requests.get(url,headers=hd).text
     eventDict=json.loads(eventData)
-    eventName=eventDict['Data']['eventName'][3]
-    eventStart=int(eventDict['Data']['startAt'][3])/1000
-    eventEnd=int(eventDict['Data']['endAt'][3])/1000
+    eventName=eventDict['rS']['EventData']['eventName'][3]
+    eventStart=int(eventDict['rS']['EventData']['startAt'][3])/1000
+    eventEnd=int(eventDict['rS']['EventData']['endAt'][3])/1000
     timediff=eventEnd-eventStart
-    epDict0=(json.loads(eventData))['rS']['cutoffs']
+    epDict0=(json.loads(eventData))['rS']['Tier']['cutoffs']
     
     epDict=[]
     for itemcount in range(0,len(epDict0)):
@@ -65,6 +65,4 @@ def get(filepath,eventNumber,rankType,regionType=3,showComplete=True):
     if showComplete:
         print("Bestdori Json Write Complete!",str(eventNumber),"TypeOn:",str(rankType),"->")
 
-    return df
-
-    
+    return df 
