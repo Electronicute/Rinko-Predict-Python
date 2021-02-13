@@ -47,7 +47,7 @@ def __Main__RunPred(filepath,enum,etp,AreaCode=3,pred_Length=3,gamma_Threshold=1
     outData.OutPut(fp,enum,etp,mid)
     return True
 
-def GetDataStorage(dirs,AreaCode=3,PredNow=True,Benum=0):
+def GetDataStorage(dirs,AreaCode=3,enum=0):
     '''This is the Core Main entry of the Predict Function for All
     :AreaCode ~ is default for cn which country code is ref as (0:jp/1:en/2:tw/3:cn/4:kr)
     :dirs ~ controls of Whole Predict File Puts, In General Which this should be BASE DIR of the Progress
@@ -56,29 +56,10 @@ def GetDataStorage(dirs,AreaCode=3,PredNow=True,Benum=0):
         :Benum ~ is the EventNumber you want to predict
         ~ Attention which this is the RANKTYPE will get all parameter which (0-2)
     '''
-    
-    if PredNow:
-        hd={'User_Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1'}
-        url='http://bandoriapi.cn/Query/Event/eventNow/'+str(AreaCode)
-        #request now and ReplotNumber
-        Data=requests.get(url,headers=hd).text
-        Dict=json.loads(Data)
 
-        if Dict['rS']!='N00':
-            enum=int(Dict['rS']['Data'][1:])
-            for RankType in range(0,3):
-                try:
-                    __Main__RunPred(dirs,enum,RankType,AreaCode,3,1)
-                    #this is a predict-ivity reference, Which is Encoded in this frame of function.
-                except:
-                    print("ON Main Func,",enum,"->",RankType,"'s Pred is Fail")
-        else:
-            print('当前无活动！')
-        
-    else:
-        for RankType in range(0,3):
-            try:
-                __Main__RunPred(dirs,enum,RankType,AreaCode,3,1)
-                #this is a predict-ivity reference, Which is Encoded in this frame of function.
-            except:
-                print("ON Main Func,",enum,"->",RankType,"'s Pred is Fail")
+    for RankType in range(0,3):
+        try:
+            __Main__RunPred(dirs,enum,RankType,AreaCode,3,1)
+            #this is a predict-ivity reference, Which is Encoded in this frame of function.
+        except Exception as ex:
+            print("ON Main Func,",str(enum),"->",str(RankType),"'s Pred is Fail",ex)

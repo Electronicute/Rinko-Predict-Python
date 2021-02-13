@@ -6,6 +6,7 @@ import csv
 import pandas as pd
 
 def get(filepath,eventNumber,rankType,regionType=3,showComplete=True):
+   
     '''this Defines the Data which need to return to alive
     :filepath: *str ~ the specific path you want to insert file into
     :eventNumber: *int ~ a number which event you want to get
@@ -13,21 +14,27 @@ def get(filepath,eventNumber,rankType,regionType=3,showComplete=True):
     :showComplete: *bool ~ see the last phrase
     :return: a csv file which save to specific position
     this can also trigs a output of isDownloadComplete, if not set 4th parameter to *False
-    '''
-    hd={'User_Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1'}
-    url='http://bandoriapi.cn/Query/Event/eventDataTracker/'+str(regionType)+'/'+str(eventNumber)+'/'+str(rankType)
-    
-    eventData=requests.get(url,headers=hd).text
-    eventDict=json.loads(eventData)
-    eventName=eventDict['rS']['EventData']['eventName'][3]
-    eventStart=int(eventDict['rS']['EventData']['startAt'][3])/1000
-    eventEnd=int(eventDict['rS']['EventData']['endAt'][3])/1000
-    timediff=eventEnd-eventStart
-    epDict0=(json.loads(eventData))['rS']['Tier']['cutoffs']
-    
-    epDict=[]
-    for itemcount in range(0,len(epDict0)):
+     '''
 
+    hd={'User_Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1'}
+    Rtype=['100','1000','2000'] #ranktype 0 1 2   #if other ranktype is needed,you can add 
+
+    url1= "https://bestdori.com/api/events/"+str(eventNumber)+".json"  #Get start/end time 
+    eventData=requests.get(url1,headers=hd).text
+    eventDict=json.loads(eventData)
+    eventName=eventDict['eventName'][regionType] 
+    eventStart=int(eventDict['startAt'][regionType])/1000 #Convert the timestamp(unit:s)
+    eventEnd=int(eventDict['endAt'][regionType])/1000
+    timediff=eventEnd-eventStart
+
+    url2="https://bestdori.com/api/tracker/data?server="+str(regionType)+"&event="+str(eventNumber)+"&tier="+Rtype[rankType]  #Get Score 
+    eventData_sc=requests.get(url2,headers=hd).text
+    eventDict_sc=json.loads(eventData_sc)
+    epDict0=(json.loads(eventData_sc))['cutoffs']
+    epDict=[]
+
+
+    for itemcount in range(0,len(epDict0)): #Check the origin data from bestdori
         try:
             if len(epDict0)>3 and 1<= itemcount<(len(epDict0)-1):
 
@@ -40,12 +47,11 @@ def get(filepath,eventNumber,rankType,regionType=3,showComplete=True):
                     epDict.append(epDict0[itemcount])
             else:
                 epDict.append(epDict0[itemcount])
-            
         except Exception as e:
             print(e)
 
-    epjson=json.dumps(epDict)
 
+    epjson=json.dumps(epDict)
     df = pd.read_json(epjson,orient='records',typ='frame')
     df.eval('pct=(((time/1000)-'+str(eventStart)+")/"+str(timediff)+')*100',inplace=True)
     df.eval('val=ep',inplace=True)
